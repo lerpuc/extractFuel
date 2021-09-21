@@ -1,0 +1,973 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Base API",
+    "description": "BASE API é um conjunto de códigos em arquitetura NodeJs com Typescript, Express e MongoDb, que são utilizadas como base de novos projetos BackEnd.",
+    "contact": {
+      "name": "Luis Eduardo Rosa",
+      "email": "luis.rosa@ideros.com.br"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3140/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Autenticação da API"
+    },
+    {
+      "name": "Usuários",
+      "description": "Cadastros de usuários e acessos as sistemas e APIs"
+    },
+    {
+      "name": "Pessoas",
+      "description": "Cadastro e Manutenção dos registros de pessoas na API"
+    }
+  ],
+  "paths": {
+    "/auth/authApi": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Obter token de autenticação na API",
+        "description": "Método responsável por gerar bearer token de autenticação da API",
+        "operationId": "getTokenApi",
+        "requestBody": {
+          "description": "Todos os atributos são obrigatórios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "validAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/auth/refresh": {
+      "get": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Revalidar token de acesso",
+        "description": "Método responsável por receber um token válido e gerar novo",
+        "operationId": "refreshToken",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "validAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/create": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Criar novo usuário",
+        "description": "Método responsável por inserir um novo usuário na API - Opções de usuários: API, USER ou ACCOUNT. Este método obriga o envio dos atributos 'clientId' e 'secretKey'",
+        "operationId": "createAuth",
+        "requestBody": {
+          "description": "Todos os atributos são obrigatórios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "authType": {
+                    "type": "string"
+                  },
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "clientId": {
+                      "type": "string"
+                    },
+                    "authType": {
+                      "type": "string"
+                    },
+                    "changePasswordOnNextLogin": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "__v": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/auth/findAll": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Obter lista de usuários",
+        "description": "Método responsável por obter a lista de usuários ativos na API",
+        "operationId": "getAuth",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "pode digitar apenas parte do conteúdo se desejar",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "in": "query",
+            "description": "pode digitar apenas parte do conteúdo se desejar",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeAuth",
+            "in": "query",
+            "description": "Escolha uma das opções: 'API', 'USER' ou 'ACCOUNT'",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/{authId}": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Atualizar registro por Id",
+        "description": "Método responsável por atualizar os dados de um registro existente, buscando por Id. Este método não permtirá o envio dos atributos 'secretKey', 'secretIv' ou 'token'",
+        "operationId": "updateAuth",
+        "parameters": [
+          {
+            "name": "authId",
+            "in": "path",
+            "description": "Id da entidade Auth",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Atributos que podem ser editados - enviar apenas os atributos que serão alterados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "authType": {
+                    "type": "string"
+                  },
+                  "changePasswordOnNextLogin": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Deletar registro por Id",
+        "description": "Método responsável por excluir os dados de um registro existente, buscando por Id.",
+        "operationId": "deleteAuth",
+        "parameters": [
+          {
+            "name": "authId",
+            "in": "path",
+            "description": "Id da entidade Auth",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/auth/changePassword/{authId}": {
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Alterar senha de acesso",
+        "description": "Método responsável por realizar a alteração de senha de acesso, obrigatório o envio da senha antiga e da nova senha.",
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "authId",
+            "in": "path",
+            "description": "Id da entidade Auth",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Atributos obrigatórios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/person/create": {
+      "post": {
+        "tags": [
+          "Pessoas"
+        ],
+        "summary": "Criar nova pessoa",
+        "description": "Método responsável por criar um novo registro de pessoa",
+        "operationId": "createPerson",
+        "requestBody": {
+          "description": "Todos os atributos são obrigatórios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "documentNumber": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "socialName": {
+                    "type": "string"
+                  },
+                  "personType": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/person/findAll": {
+      "get": {
+        "tags": [
+          "Pessoas"
+        ],
+        "summary": "Obter lista de pessoas",
+        "description": "Método responsável por obter a lista de pessoas cadastradas na API",
+        "operationId": "getPeople",
+        "parameters": [
+          {
+            "name": "documentNumber",
+            "in": "query",
+            "description": "Filtrar por CPF ou CNPJ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "pode digitar apenas parte do conteúdo se desejar",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "socialName",
+            "in": "query",
+            "description": "pode digitar apenas parte do conteúdo se desejar",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "personType",
+            "in": "query",
+            "description": "Escolha uma das opções: 'INDIVIDUAL' ou 'COMPANY'",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/person/{personId}": {
+      "post": {
+        "tags": [
+          "Pessoas"
+        ],
+        "summary": "Atualizar registro por Id",
+        "description": "Método responsável por atualizar os dados de um registro existente, buscando por Id. Este método não permtirá o envio do atributo 'sourceKey'",
+        "operationId": "updatePerson",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "Id da entidade Person",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Atributos que podem ser editados - enviar apenas os atributos que serão alterados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "documentNumber": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "socialName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Pessoas"
+        ],
+        "summary": "Deletar registro por Id",
+        "description": "Método responsável por excluir os dados de um registro existente, buscando por Id.",
+        "operationId": "deletePerson",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "description": "Id da entidade Person",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ReturnApi": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Auth": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "secretKey": {
+            "type": "string"
+          },
+          "authType": {
+            "type": "string",
+            "enum": [
+              "API",
+              "USER",
+              "ACCOUNT"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
+          }
+        }
+      },
+      "Person": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "documentNumber": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "socialName": {
+            "type": "string"
+          },
+          "personType": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "COMPANY"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "No campo 'Value' colar o token recebido no método de 'autenticação', e então clique no botão 'Authorize'",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
