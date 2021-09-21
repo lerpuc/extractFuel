@@ -16,7 +16,7 @@ class PersonRepository {
     }
 
     updateOne = async(filters: any, person: PersonInterface) => {
-        return (await Person.findByIdAndUpdate( filters, { ...person }, { upsert: false, new: true })) as PersonInterface
+        return (await Person.findOneAndUpdate( filters, { ...person }, { upsert: true, new: true })) as PersonInterface
     }
 
     deleteOne = async(filters: any) => {

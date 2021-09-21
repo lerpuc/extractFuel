@@ -20,7 +20,7 @@ class AuthRepository {
     }
 
     updateOne = async(filters: any, auth: AuthInterface) => {
-        return (await Auth.findByIdAndUpdate( filters, { ...auth }, { upsert: false, new: true })) as AuthInterface
+        return (await Auth.findOneAndUpdate( filters, { ...auth }, { upsert: true, new: true })) as AuthInterface
     }
 
     deleteOne = async(filters: any) => {
