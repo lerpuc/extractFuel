@@ -8,7 +8,22 @@ class CommonsUtil {
     }
 
     factoryReturnValueOrNull = (field: any) => {
-        return field ? field : null
+        return this.factoryReturnValueOrUndefined(field) ? field : null
+    }
+
+    factoryReturnValueOrUndefined = (field: any) => {
+      return field != undefined ? field : undefined
+    }
+
+    factoryReturnValueArray = (field: any) => {
+        if (field != undefined) {
+          if (field instanceof Array) {
+            return field
+          } else if (field.trim()) {
+            return [field]
+          }
+        }
+        return []
     }
 
     factoryElementMonthYear = (element: string, format: number, valid: boolean) => {
@@ -41,7 +56,6 @@ class CommonsUtil {
         return searchedDir
     }
 
-
     insertQuotesInStringArray(values: any[]) {
         let output = '';
         for (let i = 0; i < values.length; i++) {
@@ -60,6 +74,67 @@ class CommonsUtil {
                 resolve()
             }, seg * 1000)
         })
+    }
+
+    availableFile = async(file: string) => {
+        return new Promise(async(resolve, reject) => {
+            try {
+            let wantedFile = FileStream.existsSync(file)
+            if (wantedFile) {
+                return resolve(true)
+            }
+            let numberAttempts = 0
+            while(1) {
+                console.log(`Verificando se o arquivo '${file}' está diponível na pasta. Tentativa: ${numberAttempts}`)
+                await this.sleep(6)
+                wantedFile = FileStream.existsSync(file)
+                if (wantedFile) {
+                return resolve(true)
+                }
+                if (!wantedFile && numberAttempts === 6) {
+                return reject(false)
+                }
+                numberAttempts++
+            }
+            } catch (error) {
+            console.log("Catch 'availableFile' -> Erro reportado: ", error.message)
+                return reject(false)
+            }
+        })
+    }
+  
+
+    sortObjectArray = (arrayList: any[], sortField: string, page?: number, sortDesc?: boolean) => {
+        const newList = page > 0 ? arrayList.filter(element => element.page === page) : arrayList
+        return newList.sort(function(indexOne: string,indexTwo: string){
+          if (sortDesc) return indexOne?.[sortField] == indexTwo?.[sortField] ? 0 : indexOne?.[sortField] > indexTwo?.[sortField] ? -1 : 1
+          return indexOne?.[sortField] == indexTwo?.[sortField] ? 0 : indexOne?.[sortField] > indexTwo?.[sortField] ? 1 : -1
+        })
+    }
+  
+    validateAndReturnNumericValue = (element: any) => {
+        if (!element) return 0
+        if (element.split(",").length > 1) {
+            const newElement = Number(element.replace(/\./g, "").replace(",","."))
+            if (typeof newElement === 'number' && !isNaN(newElement)) return Number(newElement)
+        }
+        if (Number(element)) {
+            return Number(element)
+        }
+        return 0
+    }
+
+    convertStringDataInBoolean = (element: any) => {
+        if (!element) return false
+        if (typeof element ===  'string') {
+            if (Boolean(element)) {
+            return element === 'true' ?  true :  false
+            }
+        }
+        if (typeof element ===  'boolean') {
+            return element
+        }
+        return false
     }
 
 }

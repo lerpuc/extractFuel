@@ -8,7 +8,7 @@ import Authentication from './authentication/Authentication'
 const routes = Router()
 routes.post('/auth/authApi', AuthController.authApi)
 
-routes.use('/', Authentication.validateTokenApi)
+if (process.env.NODE_ENV.toString() !== 'development') routes.use('/', Authentication.validateTokenApi)
 
 routes.get('/auth/refresh', AuthController.refreshToken)
 routes.get('/auth/findAll', AuthController.index)
