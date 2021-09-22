@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Base API",
-    "description": "BASE API é um conjunto de códigos em arquitetura NodeJs com Typescript, Express e MongoDb, que são utilizadas como base de novos projetos BackEnd.",
+    "title": "Extract Fuel",
+    "description": "API para obter dados do mercado de combustíveis brasileiro",
     "contact": {
       "name": "Luis Eduardo Rosa",
       "email": "luis.rosa@ideros.com.br"
@@ -26,6 +26,10 @@
     {
       "name": "Pessoas",
       "description": "Cadastro e Manutenção dos registros de pessoas na API"
+    },
+    {
+      "name": "Extração",
+      "description": "Método de execução das extrações de dados para os parâmetros desejados"
     }
   ],
   "paths": {
@@ -874,6 +878,82 @@
         ],
         "x-codegen-request-body-name": "body"
       }
+    },
+    "/services/extractDataFromSource": {
+      "post": {
+        "tags": [
+          "Extração"
+        ],
+        "summary": "Extrair dados do mercardo de combustíveis",
+        "description": "Método responsável por extrair os dados das revendas de combutíveis, buscando os dados na base da ANP.",
+        "operationId": "extractDataFromSource",
+        "requestBody": {
+          "description": "Os atributos dentro do objeto 'filters' são opcionais, os demais atributos são obrigatórios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sourceKey": {
+                    "type": "string"
+                  },
+                  "filters": {
+                    "type": "object",
+                    "properties": {
+                      "documentNumber": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuelDealer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unsuccessful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnApi"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "bad request",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
     }
   },
   "components": {
@@ -956,6 +1036,87 @@
             "format": "date-time"
           },
           "__v": {
+            "type": "integer"
+          }
+        }
+      },
+      "FuelDealer": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "documentNumber": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "socialName": {
+            "type": "string"
+          },
+          "authorization": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "complement": {
+            "type": "string"
+          },
+          "neighborhood": {
+            "type": "string"
+          },
+          "cityState": {
+            "type": "string"
+          },
+          "zipCode": {
+            "type": "string"
+          },
+          "dispatchNumber": {
+            "type": "string"
+          },
+          "publicationDate": {
+            "type": "string"
+          },
+          "flagStart": {
+            "type": "string"
+          },
+          "postType": {
+            "type": "string"
+          },
+          "partners": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "products": {
+            "$ref": "#/components/schemas/CustomersProductsInterface"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
+          }
+        }
+      },
+      "CustomersProductsInterface": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "tancagem": {
+            "type": "integer"
+          },
+          "nozzles": {
             "type": "integer"
           }
         }
