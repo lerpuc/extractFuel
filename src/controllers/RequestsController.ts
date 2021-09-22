@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import RequestsService from '../service/RequestsService'
+import CommonsUtil from '../utils/CommonsUtil';
 
 class RequestsController {
   
@@ -9,12 +10,12 @@ class RequestsController {
       console.log(
         `${new Date().toUTCString()}        ---- EXECUÇÃO do CONTROLLER 'RequestsController' - Método: 'extractDataFromSource'`
       );
-      const invoices = await RequestsService.requestExtractDataFromSource(objectRequest)
+      const returnData = await RequestsService.requestExtractDataFromSource(objectRequest)
       
       console.log(
         `${new Date().toUTCString()}        ---- RETURN do CONTROLLER 'RequestsController' - Método: 'extractDataFromSource'`
       );
-      return res.json(invoices)
+      return res.json(CommonsUtil.factoryReturnController(returnData, 'service'))
     } catch (error) {
       let returnError = error.message
       if (error.data) {
