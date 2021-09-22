@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import AuthService from '../service/AuthService'
+import CommonsUtil from '../utils/CommonsUtil';
 
 class AuthController {
 
@@ -16,7 +17,7 @@ class AuthController {
       console.log(
         `${new Date().toUTCString()}        ---- RETURN do CONTROLLER 'AuthController' - Método: 'index'`
       );
-      return res.json(auths)
+      return res.json(CommonsUtil.factoryReturnController(auths, 'auth'))
     } catch (error) {
       let returnError = error.message
       if (error.data) {

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import PersonService from '../service/PersonService'
+import CommonsUtil from '../utils/CommonsUtil';
 
 class PersonController {
 
@@ -16,7 +17,7 @@ class PersonController {
       console.log(
         `${new Date().toUTCString()}        ---- RETURN do CONTROLLER 'PersonController' - Método: 'index'`
       );
-      return res.json(persons)
+      return res.json(CommonsUtil.factoryReturnController(persons, 'person'))
     } catch (error) {
       let returnError = error.message
       if (error.data) {

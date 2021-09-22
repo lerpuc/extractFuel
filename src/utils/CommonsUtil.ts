@@ -3,6 +3,22 @@ import Path from 'path'
 
 class CommonsUtil {
 
+    factoryReturnController = (registers?: any[], entity?: string) => {
+        const code = 0
+        const message = "REQUISIÇÃO PROCESSADA COM SUCESSO!"
+        const qtdRegisters = Array.isArray(registers) ? registers.length : 0
+        let objectReturn = {
+            code,
+            message,
+            returnDate: new Date(),
+            ...(entity && { entity }),
+            qtdRegisters,
+            registers
+        }
+        return objectReturn
+    }
+
+    
     factoryRegexMongoose = (field: any) => {
         return field ? { $regex: '.*' + field + '.*' } : null
     }
